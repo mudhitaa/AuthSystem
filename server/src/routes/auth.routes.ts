@@ -1,5 +1,5 @@
 import { Router, IRouter } from 'express';
-import {register,verifyEmail,login,logout,refreshToken,getMe,forgotPassword,resetPassword,} from '../controllers/auth.controller';
+import {register,verifyEmail,login,logout,refreshToken,getMe,forgotPassword,resetPassword,} from '../controller/auth.controller';
 
 import { authLimiter } from '../middleware/rateLimiter';
 
