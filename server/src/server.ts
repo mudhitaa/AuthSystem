@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.routes';
 const app = express();
 const PORT = process.env.PORT ?? 5000;
 
+//middleware
 app.use(cors({
   origin: process.env.CLIENT_URL ?? 'http://localhost:5173',
   credentials: true, //  for cookies

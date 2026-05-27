@@ -1,6 +1,7 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { JwtPayload } from '../types';
 
+
 export const signAccessToken = (id: string): string => {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error('JWT_SECRET not defined');
@@ -9,6 +10,7 @@ export const signAccessToken = (id: string): string => {
   };
   return jwt.sign({ id } as JwtPayload, secret, options);
 };
+
 
 export const signRefreshToken = (id: string): string => {
   const secret = process.env.JWT_REFRESH_SECRET;
@@ -19,11 +21,13 @@ export const signRefreshToken = (id: string): string => {
   return jwt.sign({ id } as JwtPayload, secret, options);
 };
 
+
 export const verifyAccessToken = (token: string): JwtPayload => {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error('JWT_SECRET not defined');
   return jwt.verify(token, secret) as JwtPayload;
 };
+
 
 export const verifyRefreshToken = (token: string): JwtPayload => {
   const secret = process.env.JWT_REFRESH_SECRET;
