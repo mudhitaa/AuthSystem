@@ -1,29 +1,14 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import api from '../../api/axios';
 import { useAuth } from '../../context/AuthContext';
 import FormInput from '../ui/FormInput';
+import { type EditProfileForm, type ChangePasswordForm, editProfileSchema, changePasswordSchema } from '../../schemas/User';
+import { EditHeader } from '../ui/Header';
 
-const editProfileSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email'),
-});
-
-const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: z.string().min(6, 'Password must be at least 6 characters'),
-  confirmPassword: z.string(),
-}).refine((d) => d.newPassword === d.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
-
-type EditProfileForm = z.infer<typeof editProfileSchema>;
-type ChangePasswordForm = z.infer<typeof changePasswordSchema>;
 
 type Tab = 'profile' | 'password';
 
@@ -31,7 +16,7 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
   const { user, login } = useAuth();
   const [tab, setTab] = useState<Tab>('profile');
 
-  // ── Profile form ──────────────────────────────────────────────────────────
+  // Profile form 
   const {
     register: regProfile,
     handleSubmit: handleProfile,
@@ -41,9 +26,10 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
     defaultValues: { name: user?.name ?? '', email: user?.email ?? '' },
   });
 
+
   const onProfileSubmit = async (data: EditProfileForm) => {
     try {
-      await api.patch('/auth/update-profile', data);
+      await api.patch('/dashboard/update-profile', data);
       // Re-fetch user to update context
       await login({ email: data.email, password: '' });
       toast.success('Profile updated!');
@@ -56,7 +42,8 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
     }
   };
 
-  // ── Password form ─────────────────────────────────────────────────────────
+
+  // Password form 
   const {
     register: regPassword,
     handleSubmit: handlePassword,
@@ -66,7 +53,7 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
 
   const onPasswordSubmit = async (data: ChangePasswordForm) => {
     try {
-      await api.patch('/auth/change-password', {
+      await api.patch('/dashboard/change-password', {
         currentPassword: data.currentPassword,
         newPassword: data.newPassword,
       });
@@ -81,22 +68,13 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
     }
   };
 
+
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md">
 
-        {/* HEADER */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100">
-          <h2 className="text-lg font-semibold text-slate-900">Edit profile</h2>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+        <EditHeader onClose={onClose} />
 
         {/* TABS */}
         <div className="flex border-b border-slate-100 px-6">
@@ -118,7 +96,7 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
         {/* BODY */}
         <div className="p-6">
 
-          {/* PROFILE TAB */}
+          {/* PROFILE  */}
           {tab === 'profile' && (
             <form onSubmit={handleProfile(onProfileSubmit)} className="space-y-4">
               <FormInput
@@ -148,7 +126,7 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
             </form>
           )}
 
-          {/* PASSWORD TAB */}
+          {/* PASSWORD*/}
           {tab === 'password' && (
             <form onSubmit={handlePassword(onPasswordSubmit)} className="space-y-4">
               <FormInput

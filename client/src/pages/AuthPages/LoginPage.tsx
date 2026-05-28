@@ -34,7 +34,7 @@ export default function LoginPage() {
   };
 
   return (
-    <AuthCard image={loginImg} imageAlt="login" gradient="from-pink-100 to-pink-200">
+    <AuthCard image={loginImg} imageAlt="login" gradient="from-pink-50 to-pink-100">
 
       <Heading classname="text-pink-700" text="Login" />
 

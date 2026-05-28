@@ -34,7 +34,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <AuthCard image={registerImg} imageAlt="register" gradient="from-purple-100 to-purple-200">
+    <AuthCard image={registerImg} imageAlt="register" gradient="from-purple-50 to-purple-100">
 
       <Heading classname="text-purple-700" text="Sign Up" />
 

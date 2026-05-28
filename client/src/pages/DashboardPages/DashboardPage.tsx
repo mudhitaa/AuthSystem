@@ -2,7 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../../context/AuthContext';
 import UserCard from '../../components/dashboard/UserCard';
-/*  */
+import FeatureChecklist from '../../components/dashboard/FeautureChecklist';
+import TechStack from '../../components/dashboard/TechStack';
+import AuthFlows from '../../components/dashboard/AuthFlows';
+import { Header } from '../../components/ui/Header';
+import { Footer } from '../../components/ui/Footer';
 
 export default function DashboardPage() {
   const { logout } = useAuth();
@@ -18,46 +22,26 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-slate-50">
 
       {/* TOP NAV */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-md bg-slate-900 flex items-center justify-center">
-              <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <span className="text-sm font-semibold text-slate-800">MERN Auth</span>
-            <span className="text-xs text-slate-400 border border-slate-200 px-2 py-0.5 rounded-full ml-1">
-              Portfolio project
-            </span>
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-800 transition"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-            Sign out
-          </button>
-        </div>
-      </header>
+      <Header handleLogout={handleLogout} />
 
       {/* PAGE */}
       <main className="max-w-5xl mx-auto px-6 py-8 space-y-10">
-
+ 
         <section><UserCard /></section>
+ 
+        <div className="border-t border-slate-200" />
+ 
+        <section><TechStack /></section>
+ 
+        <div className="border-t border-slate-200" />
+ 
+        <section><AuthFlows /></section>
 
         <div className="border-t border-slate-200" />
-
-
-        <footer className="text-center text-xs text-slate-400 pb-6">
-          Built with React · Express · MongoDB · TypeScript · pnpm workspaces
-        </footer>
-
+ 
+        <section><FeatureChecklist /></section>
+ 
+        <Footer/>
       </main>
     </div>
   );

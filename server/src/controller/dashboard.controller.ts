@@ -19,6 +19,9 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
   }
 };
 
+
+
+
 export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
   const { name, email } = req.body as { name: string; email: string };
 
@@ -35,6 +38,8 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
 
   res.json({ user: { id: user._id, name: user.name, email: user.email } });
 };
+
+
 
 
 export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
