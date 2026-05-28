@@ -4,7 +4,7 @@ import User from '../models/User';
 import sendEmail from '../utils/sendEmail';
 import {signAccessToken, signRefreshToken,verifyRefreshToken,} from '../utils/token';
 import { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema,} from '../utils/validation';
-import { AuthRequest, RegisterBody, LoginBody } from '../types';
+import { RegisterBody, LoginBody } from '../types';
 
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -167,25 +167,6 @@ export const logout = (_req: Request, res: Response): void => {
   });
 
   res.json({ message: 'Logged out successfully' });
-};
-
-
-
-export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
-  try {
-    const user = req.user;
-
-    if (!user) {
-      res.status(401).json({ message: 'Not authorised' });
-      return;
-    }
-
-    res.json({
-      user: { id: user._id, name: user.name, email: user.email },
-    });
-  } catch {
-    res.status(500).json({ message: 'Server error' });
-  }
 };
 
 

@@ -5,7 +5,8 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import errorHandler from './middleware/errorHandler';
 import connectDB from './config/db';
-import authRoutes from './routes/auth.routes';
+
+import router from './routes/router';
 
 const app = express();
 const PORT = process.env.PORT ?? 5000;
@@ -28,7 +29,7 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-app.use('/api/auth', authRoutes);
+app.use('/api/', router);
 
 
 // error handling middleware

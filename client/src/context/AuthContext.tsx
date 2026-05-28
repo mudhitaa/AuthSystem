@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const token = localStorage.getItem('accessToken');
       if (!token) { setIsLoading(false); return; }
       try {
-        const { data } = await api.get<{ user: User }>('/auth/me');
+        const { data } = await api.get<{ user: User }>('/dashboard/me');
         setUser(data.user);
         localStorage.setItem('user', JSON.stringify(data.user));
       } catch {

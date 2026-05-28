@@ -6,6 +6,7 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+
 // Attach access token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');

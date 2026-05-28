@@ -1,20 +1,20 @@
-import { Router, IRouter } from 'express';
+import { Router, type Router as RouterType } from 'express';
 import {register,verifyEmail,login,logout,refreshToken,getMe,forgotPassword,resetPassword,} from '../controller/auth.controller';
 
 import { authLimiter } from '../middleware/rateLimiter';
+import protect from '../middleware/protect';
 
-const router: IRouter = Router();
+const authRouter: RouterType = Router();
 
 
-router.post('/register',authLimiter, register);
-router.get('/verify-email/:token',verifyEmail);
-router.post('/login',authLimiter, login);
-router.post('/logout',logout);
-router.post('/refresh-token',refreshToken);
-router.post('/forgot-password', authLimiter, forgotPassword);
-router.put('/reset-password/:token',resetPassword);
+authRouter.post('/register',authLimiter, register);
+authRouter.get('/verify-email/:token',verifyEmail);
+authRouter.post('/login',authLimiter, login);
+authRouter.post('/logout',logout);
+authRouter.post('/refresh-token',refreshToken);
+authRouter.post('/forgot-password', authLimiter, forgotPassword);
+authRouter.put('/reset-password/:token',resetPassword);
 
-// Protected 
-router.get('/me', getMe);
 
-export default router;
+
+export default authRouter;
