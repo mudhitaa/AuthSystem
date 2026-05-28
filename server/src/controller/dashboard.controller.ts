@@ -122,7 +122,7 @@ export const deleteAccount = async (req: AuthRequest, res: Response): Promise<vo
   res.clearCookie('refreshToken', {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    sameSite: 'none',
   });
 
   res.json({ message: 'Account deleted successfully' });
