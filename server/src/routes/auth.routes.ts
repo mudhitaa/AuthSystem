@@ -1,8 +1,8 @@
 import { Router, type Router as RouterType } from 'express';
-import {register,verifyEmail,login,logout,refreshToken,getMe,forgotPassword,resetPassword,} from '../controller/auth.controller';
+import {register,verifyEmail,login,logout,refreshToken,forgotPassword,resetPassword,} from '../controller/auth.controller';
 
 import { authLimiter } from '../middleware/rateLimiter';
-import protect from '../middleware/protect';
+
 
 const authRouter: RouterType = Router();
 
