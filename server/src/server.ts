@@ -33,7 +33,6 @@ const corsOptions: CorsOptions = {
 
 app.set('trust proxy', 1);
 
-app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 
