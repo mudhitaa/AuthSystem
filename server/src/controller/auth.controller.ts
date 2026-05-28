@@ -24,35 +24,34 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         }
 
         const verifyToken = crypto.randomBytes(32).toString('hex');
-        console.log("1. before user create");
+        
         const user = await User.create({
         name,
         email,
         password,
         verifyToken: crypto.createHash('sha256').update(verifyToken).digest('hex'),
         });
-        console.log("2. after user create");
+       
 
         const verifyUrl = `${process.env.CLIENT_URL}/verify-email/${verifyToken}`;
 
         await sendEmail({
-        to: email,
-        subject: 'Verify your email',
-        html: `
+          to: email,
+          subject: 'Verify your email',
+          html: `
             <h2>Welcome, ${name}!</h2>
             <p>Click the link below to verify your email address.</p>
-            <a href="${verifyUrl}" style="padding:10px 20px;background:#3B82F6;color:#fff;border-radius:6px;text-decoration:none">
-            Verify Email
+            <a href="${verifyUrl}">
+              Verify Email
             </a>
-        `,
+          `,
         });
-        console.log("3 email sent");
 
         res.status(201).json({
-        message: 'Account created. Please check your email to verify your account.',
-        user: { id: user._id, name: user.name, email: user.email },
+          message: 'Account created. Please check your email to verify your account.',
+          user: { id: user._id, name: user.name, email: user.email },
         });
-        console.log("4. response sent");
+      
   } catch (err) {
   console.error('Register error:', err); 
   res.status(500).json({ message: 'Server error during registration' });

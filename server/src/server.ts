@@ -31,8 +31,9 @@ const corsOptions: CorsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
+app.set('trust proxy', 1);
 
-app.options('/{*path}', cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 
@@ -43,6 +44,7 @@ app.use(cookieParser());
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
+
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
