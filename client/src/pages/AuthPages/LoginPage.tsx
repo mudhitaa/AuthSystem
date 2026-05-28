@@ -9,6 +9,7 @@ import { loginSchema, type LoginForm } from '../../hooks/useFormSchemas';
 import AuthCard from '../../components/ui/AuthCards';
 import FormInput from '../../components/ui/FormInput';
 import {Heading} from '../../components/typography/Heading';
+import { AuthButton } from '../../components/ui/Button';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -21,6 +22,7 @@ export default function LoginPage() {
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = async (data: LoginForm) => {
+    console.log('Login data:', data);
     try {
       await login(data);
       toast.success('Welcome back!');
@@ -60,13 +62,7 @@ export default function LoginPage() {
           }
         />
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-pink-700 text-white py-2 rounded hover:bg-pink-500 transition disabled:opacity-50"
-        >
-          {isSubmitting ? 'Logging in...' : 'Login'}
-        </button>
+      <AuthButton isSubmitting={isSubmitting} buffer="Login" buffering="Logging in..." className=" bg-pink-500 hover:bg-pink-600 " />
       </form>
 
       <p className="text-center text-xs mt-4">

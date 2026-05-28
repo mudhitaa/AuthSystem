@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../../api/axios';
+import { Heading } from '../../components/typography/Heading';
 
 type Status = 'loading' | 'success' | 'error';
 
@@ -75,7 +76,10 @@ export default function VerifyEmailPage() {
                   </svg>
                 </div>
               </div>
-              <h2 className="text-xl font-bold text-gray-900">Email verified!</h2>
+              <Heading
+                text="Email verified!"
+                classname="text-gray-900"
+              />
               <p className="text-sm text-gray-500 mt-2">{message}</p>
 
               {/* SUCCESS BADGE */}
@@ -98,14 +102,17 @@ export default function VerifyEmailPage() {
           {/* ERROR */}
           {status === 'error' && (
             <>
-              <div className="flex justify-center mb-6">
+              <div className="flex justify-center mb-6 ">
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
                   <svg className="w-8 h-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </div>
               </div>
-              <h2 className="text-xl font-bold text-gray-900">Verification failed</h2>
+              <Heading
+                text="Verification failed"
+                classname="text-gray-900"
+              />
               <p className="text-sm text-gray-500 mt-2">{message}</p>
 
               {/* ERROR BADGE */}

@@ -9,6 +9,7 @@ import { registerSchema, type RegisterForm } from '../../hooks/useFormSchemas';
 import AuthCard from '../../components/ui/AuthCards';
 import FormInput from '../../components/ui/FormInput';
 import { Heading } from '../../components/typography/Heading';
+import { AuthButton } from '../../components/ui/Button';
 
 export default function RegisterPage() {
   const { register: registerUser } = useAuth();
@@ -62,14 +63,7 @@ export default function RegisterPage() {
           registration={register('password')}
           error={errors.password?.message}
         />
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-purple-700 text-white py-2 rounded hover:bg-purple-500 transition disabled:opacity-50"
-        >
-          {isSubmitting ? 'Creating account...' : 'Sign Up'}
-        </button>
+        <AuthButton isSubmitting={isSubmitting} buffer="Sign Up" buffering="Creating account..." className=" bg-purple-600 hover:bg-purple-700 " />
       </form>
 
       <p className="text-xs text-center mt-4">

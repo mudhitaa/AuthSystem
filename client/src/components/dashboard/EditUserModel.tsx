@@ -8,12 +8,14 @@ import { useAuth } from '../../context/AuthContext';
 import FormInput from '../ui/FormInput';
 import { type EditProfileForm, type ChangePasswordForm, editProfileSchema, changePasswordSchema } from '../../schemas/User';
 import { EditHeader } from '../ui/Header';
-
+import {type User } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 type Tab = 'profile' | 'password';
 
 export default function EditUserModal({ onClose }: { onClose: () => void }) {
-  const { user, login } = useAuth();
+  const { user,logout } = useAuth();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('profile');
 
   // Profile form 
@@ -27,20 +29,36 @@ export default function EditUserModal({ onClose }: { onClose: () => void }) {
   });
 
 
-  const onProfileSubmit = async (data: EditProfileForm) => {
-    try {
-      await api.patch('/dashboard/update-profile', data);
-      // Re-fetch user to update context
-      await login({ email: data.email, password: '' });
-      toast.success('Profile updated!');
+const onProfileSubmit = async (data: EditProfileForm) => {
+  try {
+    const { data: res } = await api.patch<{
+      message: string;
+      emailChanged: boolean;
+      user?: User;
+    }>('/dashboard/update-profile', data);
+
+    if (res.emailChanged) {
+      // Email changed — log out and prompt verification
+      toast.success('Email updated! Check your new inbox to verify.');
       onClose();
-    } catch (err) {
-      const message = axios.isAxiosError(err)
-        ? (err.response?.data as { message?: string })?.message ?? 'Update failed'
-        : 'Something went wrong';
-      toast.error(message);
+      await logout();
+      navigate('/login');
+      return;
     }
-  };
+
+    // Name only change — update context
+    if (res.user) {
+      localStorage.setItem('user', JSON.stringify(res.user));
+    }
+    toast.success('Profile updated!');
+    onClose();
+  } catch (err) {
+    const message = axios.isAxiosError(err)
+      ? (err.response?.data as { message?: string })?.message ?? 'Update failed'
+      : 'Something went wrong';
+    toast.error(message);
+  }
+};
 
 
   // Password form 

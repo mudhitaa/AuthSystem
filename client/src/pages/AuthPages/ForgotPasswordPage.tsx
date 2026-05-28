@@ -13,6 +13,8 @@ import {
 import AuthCard from '../../components/ui/AuthCards';
 import FormInput from '../../components/ui/FormInput';
 import { Heading } from '../../components/typography/Heading';
+import { AuthButton } from '../../components/ui/Button';
+
 
 export default function ForgotPasswordPage() {
   const {
@@ -56,17 +58,14 @@ export default function ForgotPasswordPage() {
             </svg>
           </div>
 
-          <h2 className="text-xl font-bold text-gray-900">
-            Check your inbox
-          </h2>
-
-          <p className="text-sm text-gray-500 mt-2">
-            If that email exists, we've sent a reset link.
-          </p>
-
+          <Heading
+            text="Check your email"
+            subtitle="If that email exists, we've sent a reset link."
+            classname="text-gray-900"
+          />
           <Link
             to="/login"
-            className="inline-block mt-6 text-yellow-700 hover:underline"
+            className="inline-block  text-yellow-700 hover:underline"
           >
             Back to login
           </Link>
@@ -96,13 +95,7 @@ export default function ForgotPasswordPage() {
           error={errors.email?.message}
         />
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-yellow-600 text-white py-2 rounded hover:bg-yellow-500 transition disabled:opacity-50"
-        >
-          {isSubmitting ? 'Sending...' : 'Send Link'}
-        </button>
+      <AuthButton isSubmitting={isSubmitting} buffer="Send Reset Link" buffering="Sending..." className=" bg-yellow-500 hover:bg-yellow-600 " />
       </form>
 
       <p className="text-xs text-center mt-4">

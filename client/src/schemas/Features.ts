@@ -21,6 +21,7 @@ export const features: Feature[] = [
   { label: 'Zod + RHF forms', description: 'Type-safe schemas, inline errors, no re-renders', category: 'Code Quality' },
   { label: 'Centralised error handler', description: 'All Express errors caught and formatted consistently', category: 'Code Quality' },
   { label: 'Edit profile + change password', description: 'Full profile management from dashboard', category: 'Features' },
+  { label: 'New email verification', description: 'Email verification for updated email addresses', category: 'Features' },
 ];
 
 export const categories = [...new Set(features.map((f) => f.category))];

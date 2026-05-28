@@ -29,3 +29,8 @@ export const resetPasswordSchema = Joi.object({
     'string.min': 'Password must be at least 6 characters',
   }),
 });
+
+export const updateProfileSchema = Joi.object({
+  name: Joi.string().min(2).max(60).optional(),
+  email: Joi.string().email().optional(),
+}).min(1); 
