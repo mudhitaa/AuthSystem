@@ -6,18 +6,36 @@ interface SendEmailOptions {
   html: string;
 }
 
+// Explicit SMTP config instead of service: 'Gmail'
+
 const transporter = nodemailer.createTransport({
-  service: 'Gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false,       
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    pass: process.env.EMAIL_PASS,  
+  },
+  
+  tls: {
+    rejectUnauthorized: true,
   },
 });
 
-//gmail handles the delivery not the server
+
+if (process.env.NODE_ENV === 'production') {
+  transporter.verify((error) => {
+    if (error) {
+      console.error(' SMTP transporter verification failed:', error.message);
+    } else {
+      console.log('SMTP transporter ready');
+    }
+  });
+}
+
 const sendEmail = async ({ to, subject, html }: SendEmailOptions): Promise<void> => {
   await transporter.sendMail({
-    from: process.env.EMAIL_FROM ?? process.env.EMAIL_USER,
+    from: `"${process.env.APP_NAME ?? 'App'}" <${process.env.EMAIL_FROM ?? process.env.EMAIL_USER}>`,
     to,
     subject,
     html,

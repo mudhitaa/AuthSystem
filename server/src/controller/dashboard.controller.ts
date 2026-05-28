@@ -107,23 +107,26 @@ export const changePassword = async (req: AuthRequest, res: Response): Promise<v
 
 
 export const deleteAccount = async (req: AuthRequest, res: Response): Promise<void> => {
-  const user = await User.findById(req.user?._id);
-  if (!user) { res.status(404).json({ message: 'User not found' }); return; }
+  try {
+    const user = await User.findById(req.user?._id);
+    if (!user) { res.status(404).json({ message: 'User not found' }); return; }
 
-  // Block demo account
-  if (user._id.toString() === process.env.DEMO_USER_ID) {
-    res.status(403).json({ message: 'Demo account cannot be deleted' });
-    return;
+    if (user._id.toString() === process.env.DEMO_USER_ID) {
+      res.status(403).json({ message: 'Demo account cannot be deleted' });
+      return;
+    }
+
+    await User.findByIdAndDelete(user._id);
+
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
+    });
+
+    res.json({ message: 'Account deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error during account deletion' });
   }
-
-  await User.findByIdAndDelete(user._id);
-
-  // Clear refresh token cookie
-  res.clearCookie('refreshToken', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'none',
-  });
-
-  res.json({ message: 'Account deleted successfully' });
 };
