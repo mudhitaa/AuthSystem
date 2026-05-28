@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return stored ? (JSON.parse(stored) as User) : null;
   });
   const [isLoading, setIsLoading] = useState(true);
+  
 
   // On mount, verify token is still valid
   useEffect(() => {

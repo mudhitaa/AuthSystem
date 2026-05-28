@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'http://localhost:5000/api',
   withCredentials: true, // send cookies (refresh token)
   headers: { 'Content-Type': 'application/json' },
 });
@@ -32,7 +32,13 @@ api.interceptors.response.use(
   async (error) => {
     const original = error.config as typeof error.config & { _retry?: boolean };
 
-    if (error.response?.status === 401 && !original._retry) {
+    if (
+      error.response?.status === 401 &&
+      !original._retry &&
+      original.url !== '/auth/login' &&
+      original.url !== '/auth/register' &&
+      original.url !== '/auth/refresh-token'
+    ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -51,7 +57,8 @@ api.interceptors.response.use(
         processQueue(null, data.accessToken);
         original.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(original);
-      } catch (err) {
+      } 
+      catch (err) {
         processQueue(err, null);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('user');

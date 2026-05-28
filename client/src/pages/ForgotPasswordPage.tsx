@@ -4,19 +4,26 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import axios from 'axios';
 import api from '../api/axios';
-import { forgotPasswordSchema,type ForgotPasswordForm } from '../hooks/useFormSchemas';
+import {
+  forgotPasswordSchema,
+  type ForgotPasswordForm,
+} from '../hooks/useFormSchemas';
+
+import forgotImg from '../assets/forgotimg.jpg';
+import bgImg from '../assets/passbg.jpg';
 
 export default function ForgotPasswordPage() {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isSubmitSuccessful },
-  } = useForm<ForgotPasswordForm>({ resolver: zodResolver(forgotPasswordSchema) });
+  } = useForm<ForgotPasswordForm>({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
 
   const onSubmit = async (data: ForgotPasswordForm) => {
     try {
       await api.post('/auth/forgot-password', data);
-      // Success is handled by isSubmitSuccessful — show success UI
     } catch (err) {
       const message = axios.isAxiosError(err)
         ? (err.response?.data as { message?: string })?.message ?? 'Request failed'
@@ -25,62 +32,126 @@ export default function ForgotPasswordPage() {
     }
   };
 
+  // SUCCESS STATE
   if (isSubmitSuccessful) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="auth-card text-center">
-          <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-7 h-7 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        <div className="bg-white shadow-xl rounded-xl p-8 text-center max-w-md w-full">
+          
+          <div className="w-14 h-14 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg
+              className="w-7 h-7 text-yellow-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+              />
             </svg>
           </div>
+
           <h2 className="text-xl font-bold text-gray-900">Check your inbox</h2>
-          <p className="text-sm text-gray-500 mt-2 leading-relaxed">
-            If that email is registered, we've sent a reset link. It expires in 10 minutes.
+          <p className="text-sm text-gray-500 mt-2">
+            If that email exists, we’ve sent a reset link.
           </p>
-          <Link to="/login" className="inline-block mt-6 text-sm text-blue-600 hover:underline">
-            Back to sign in
+
+          <Link
+            to="/login"
+            className="inline-block mt-6 text-yellow-700 hover:underline"
+          >
+            Back to login
           </Link>
         </div>
       </div>
     );
   }
 
+  // MAIN UI 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="auth-card">
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Forgot password?</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Enter your email and we'll send you a reset link
-          </p>
+    <div
+      className="min-h-screen flex items-center justify-center px-4 bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${bgImg})` }}
+    >
+      <div className="flex bg-white shadow-xl rounded-xl overflow-hidden w-[800px] h-[450px]">
+
+        {/* LEFT*/}
+        <div className="hidden md:block w-1/2">
+          <img
+            src={forgotImg}
+            alt="forgot password"
+            className="w-full h-full object-cover"
+          />
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-          <div>
-            <label className="label" htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              className={`input ${errors.email ? 'input-error' : ''}`}
-              {...register('email')}
-            />
-            {errors.email && <p className="error-text">{errors.email.message}</p>}
+        {/* RIGHT  */}
+        <div className="w-full md:w-1/2 p-8 flex flex-col justify-center">
+
+          {/* ICON */}
+          <div className="flex justify-center mb-3">
+            <svg
+              className="h-12 w-12 text-yellow-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 12H8m0 0l4-4m-4 4l4 4m8-12H4a2 2 0 00-2 2v16a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2z"
+              />
+            </svg>
           </div>
 
-          <button type="submit" disabled={isSubmitting} className="btn-primary">
-            {isSubmitting ? 'Sending link…' : 'Send reset link'}
-          </button>
-        </form>
+          <h1 className="text-2xl font-bold text-yellow-700 text-center">
+            Forgot Password
+          </h1>
 
-        <p className="text-center text-sm text-gray-500 mt-6">
-          Remembered your password?{' '}
-          <Link to="/login" className="text-blue-600 font-medium hover:underline">
-            Sign in
-          </Link>
-        </p>
+          <p className="text-sm text-yellow-500 text-center mt-2 mb-6">
+            Enter your email and we’ll send a reset link
+          </p>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+
+            <div>
+              <label className="block text-sm mb-1">Email</label>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                className="w-full border border-yellow-200 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                {...register('email')}
+              />
+              {errors.email && (
+                <p className="text-xs text-red-500">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-yellow-600 text-white py-2 rounded hover:bg-yellow-500 transition"
+            >
+              {isSubmitting ? 'Sending...' : 'Send Link'}
+            </button>
+          </form>
+
+          <p className="text-xs text-center mt-4">
+            Remember password?{' '}
+            <Link
+              to="/login"
+              className="text-yellow-700 hover:text-yellow-500"
+            >
+              Back to login
+            </Link>
+          </p>
+
+        </div>
       </div>
     </div>
   );
