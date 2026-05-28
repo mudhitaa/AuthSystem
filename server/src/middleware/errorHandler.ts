@@ -15,7 +15,7 @@ const errorHandler = (err: AppError,_req: Request,res: Response,_next: NextFunct
     message = 'An account with that email already exists';
   }
 
-  // Mongoose cast error (bad ObjectId)
+  // Mongoose cast error
   if (err.name === 'CastError') {
     statusCode = 400;
     message = 'Resource not found';

@@ -14,6 +14,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+//gmail handles the delivery not the server
 const sendEmail = async ({ to, subject, html }: SendEmailOptions): Promise<void> => {
   await transporter.sendMail({
     from: process.env.EMAIL_FROM ?? process.env.EMAIL_USER,
