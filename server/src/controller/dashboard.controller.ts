@@ -23,13 +23,17 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
 
 
 
-
 export const updateProfile = async (req: AuthRequest, res: Response): Promise<void> => {
+  
   const { name, email } = req.body as { name?: string; email?: string };
 
   const user = await User.findById(req.user?._id);
   if (!user) { res.status(404).json({ message: 'User not found' }); return; }
 
+  if (user._id.toString() === process.env.DEMO_USER_ID) {
+    res.status(403).json({ message: 'Demo account cannot be edited' });
+    return;
+  }
   const emailChanged = email && email !== user.email;
 
   // Check new email not already taken
@@ -79,7 +83,6 @@ export const updateProfile = async (req: AuthRequest, res: Response): Promise<vo
 
 
 
-
 export const changePassword = async (req: AuthRequest, res: Response): Promise<void> => {
   const { currentPassword, newPassword } = req.body as {
     currentPassword: string; newPassword: string;
@@ -88,6 +91,10 @@ export const changePassword = async (req: AuthRequest, res: Response): Promise<v
   const user = await User.findById(req.user?._id).select('+password');
   if (!user) { res.status(404).json({ message: 'User not found' }); return; }
 
+  if (user._id.toString() === process.env.DEMO_USER_ID) {
+    res.status(403).json({ message: 'Demo account cannot be edited' });
+    return;
+  }
   const isMatch = await user.matchPassword(currentPassword);
   if (!isMatch) { res.status(401).json({ message: 'Current password is incorrect' }); return; }
 
@@ -95,4 +102,28 @@ export const changePassword = async (req: AuthRequest, res: Response): Promise<v
   await user.save();
 
   res.json({ message: 'Password changed successfully' });
+};
+
+
+
+export const deleteAccount = async (req: AuthRequest, res: Response): Promise<void> => {
+  const user = await User.findById(req.user?._id);
+  if (!user) { res.status(404).json({ message: 'User not found' }); return; }
+
+  // Block demo account
+  if (user._id.toString() === process.env.DEMO_USER_ID) {
+    res.status(403).json({ message: 'Demo account cannot be deleted' });
+    return;
+  }
+
+  await User.findByIdAndDelete(user._id);
+
+  // Clear refresh token cookie
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+  });
+
+  res.json({ message: 'Account deleted successfully' });
 };

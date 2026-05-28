@@ -181,12 +181,15 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
     }
 
     const user = await User.findOne({ email: req.body.email as string });
-
     if (!user) {
       res.json({ message: 'If that email exists, a reset link has been sent.' });
       return;
     }
-
+    
+    if (user._id.toString() === process.env.DEMO_USER_ID) {
+      res.json({ message: 'If that email exists, a reset link has been sent.' });
+      return;
+    }
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     user.resetPasswordToken = crypto
@@ -247,9 +250,13 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
       resetPasswordToken: hashed,
       resetPasswordExpire: { $gt: new Date() },
     });
-
+    
     if (!user) {
       res.status(400).json({ message: 'Reset link is invalid or has expired' });
+      return;
+    }
+    if (user._id.toString() === process.env.DEMO_USER_ID) {
+      res.status(403).json({ message: 'Demo account cannot be edited' });
       return;
     }
 
@@ -264,3 +271,5 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({ message: 'Server error during password reset' });
   }
 };
+
+

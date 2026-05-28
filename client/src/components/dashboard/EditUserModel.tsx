@@ -1,92 +1,13 @@
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import toast from 'react-hot-toast';
-import axios from 'axios';
-import api from '../../api/axios';
-import { useAuth } from '../../context/AuthContext';
-import FormInput from '../ui/FormInput';
-import { type EditProfileForm, type ChangePasswordForm, editProfileSchema, changePasswordSchema } from '../../schemas/User';
 import { EditHeader } from '../ui/Header';
-import {type User } from '../../types';
-import { useNavigate } from 'react-router-dom';
+import ProfileTab from './EditTabs/ProfileTab';
+import PasswordTab from './EditTabs/PasswordTab';
+import DangerTab from './EditTabs/DangerTab';
 
-type Tab = 'profile' | 'password';
+type Tab = 'profile' | 'password' | 'danger';
 
 export default function EditUserModal({ onClose }: { onClose: () => void }) {
-  const { user,logout } = useAuth();
-  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('profile');
-
-  // Profile form 
-  const {
-    register: regProfile,
-    handleSubmit: handleProfile,
-    formState: { errors: profileErrors, isSubmitting: profileSubmitting },
-  } = useForm<EditProfileForm>({
-    resolver: zodResolver(editProfileSchema),
-    defaultValues: { name: user?.name ?? '', email: user?.email ?? '' },
-  });
-
-
-const onProfileSubmit = async (data: EditProfileForm) => {
-  try {
-    const { data: res } = await api.patch<{
-      message: string;
-      emailChanged: boolean;
-      user?: User;
-    }>('/dashboard/update-profile', data);
-
-    if (res.emailChanged) {
-      // Email changed — log out and prompt verification
-      toast.success('Email updated! Check your new inbox to verify.');
-      onClose();
-      await logout();
-      navigate('/login');
-      return;
-    }
-
-    // Name only change — update context
-    if (res.user) {
-      localStorage.setItem('user', JSON.stringify(res.user));
-    }
-    toast.success('Profile updated!');
-    onClose();
-  } catch (err) {
-    const message = axios.isAxiosError(err)
-      ? (err.response?.data as { message?: string })?.message ?? 'Update failed'
-      : 'Something went wrong';
-    toast.error(message);
-  }
-};
-
-
-  // Password form 
-  const {
-    register: regPassword,
-    handleSubmit: handlePassword,
-    formState: { errors: passwordErrors, isSubmitting: passwordSubmitting },
-    reset: resetPassword,
-  } = useForm<ChangePasswordForm>({ resolver: zodResolver(changePasswordSchema) });
-
-  const onPasswordSubmit = async (data: ChangePasswordForm) => {
-    try {
-      await api.patch('/dashboard/change-password', {
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-      });
-      toast.success('Password changed!');
-      resetPassword();
-      onClose();
-    } catch (err) {
-      const message = axios.isAxiosError(err)
-        ? (err.response?.data as { message?: string })?.message ?? 'Failed to change password'
-        : 'Something went wrong';
-      toast.error(message);
-    }
-  };
-
-
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
@@ -96,92 +17,30 @@ const onProfileSubmit = async (data: EditProfileForm) => {
 
         {/* TABS */}
         <div className="flex border-b border-slate-100 px-6">
-          {(['profile', 'password'] as Tab[]).map((t) => (
+          {(['profile', 'password', 'danger'] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`py-3 px-1 mr-6 text-sm font-medium border-b-2 transition capitalize
+              className={`py-3 px-1 mr-6 text-sm font-medium border-b-2 transition
                 ${tab === t
-                  ? 'border-slate-800 text-slate-900'
+                  ? t === 'danger'
+                    ? 'border-red-500 text-red-600'
+                    : 'border-slate-800 text-slate-900'
                   : 'border-transparent text-slate-400 hover:text-slate-600'
                 }`}
             >
-              {t === 'profile' ? 'Profile info' : 'Change password'}
+              {t === 'profile' ? 'Profile info' : t === 'password' ? 'Change password' : 'Danger zone'}
             </button>
           ))}
         </div>
 
         {/* BODY */}
         <div className="p-6">
-
-          {/* PROFILE  */}
-          {tab === 'profile' && (
-            <form onSubmit={handleProfile(onProfileSubmit)} className="space-y-4">
-              <FormInput
-                label="Full name"
-                type="text"
-                placeholder="John Doe"
-                registration={regProfile('name')}
-                error={profileErrors.name?.message}
-              />
-              <FormInput
-                label="Email"
-                type="email"
-                placeholder="you@example.com"
-                registration={regProfile('email')}
-                error={profileErrors.email?.message}
-              />
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={onClose}
-                  className="flex-1 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition">
-                  Cancel
-                </button>
-                <button type="submit" disabled={profileSubmitting}
-                  className="flex-1 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-700 transition disabled:opacity-50">
-                  {profileSubmitting ? 'Saving...' : 'Save changes'}
-                </button>
-              </div>
-            </form>
-          )}
-
-          {/* PASSWORD*/}
-          {tab === 'password' && (
-            <form onSubmit={handlePassword(onPasswordSubmit)} className="space-y-4">
-              <FormInput
-                label="Current password"
-                type="password"
-                placeholder="••••••••"
-                registration={regPassword('currentPassword')}
-                error={passwordErrors.currentPassword?.message}
-              />
-              <FormInput
-                label="New password"
-                type="password"
-                placeholder="Min. 6 characters"
-                registration={regPassword('newPassword')}
-                error={passwordErrors.newPassword?.message}
-              />
-              <FormInput
-                label="Confirm new password"
-                type="password"
-                placeholder="••••••••"
-                registration={regPassword('confirmPassword')}
-                error={passwordErrors.confirmPassword?.message}
-              />
-              <div className="flex gap-3 pt-2">
-                <button type="button" onClick={onClose}
-                  className="flex-1 py-2 rounded-lg border border-slate-200 text-sm text-slate-600 hover:bg-slate-50 transition">
-                  Cancel
-                </button>
-                <button type="submit" disabled={passwordSubmitting}
-                  className="flex-1 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-700 transition disabled:opacity-50">
-                  {passwordSubmitting ? 'Updating...' : 'Update password'}
-                </button>
-              </div>
-            </form>
-          )}
-
+          {tab === 'profile'   && <ProfileTab  onClose={onClose} />}
+          {tab === 'password'  && <PasswordTab onClose={onClose} />}
+          {tab === 'danger'    && <DangerTab   onClose={onClose} />}
         </div>
+
       </div>
     </div>
   );

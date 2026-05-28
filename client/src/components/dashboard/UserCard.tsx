@@ -5,6 +5,7 @@ import { SubHeading } from '../typography/Heading';
 
 export default function UserCard() {
   const { user } = useAuth();
+  const isDemoAccount = user?.email === 'alice@gmail.com';
   const [editOpen, setEditOpen] = useState(false);
 
   const initials = user?.name
@@ -30,6 +31,16 @@ export default function UserCard() {
               <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
               Active
             </span>
+             {/* Show this only for demo account */}
+              {isDemoAccount && (
+                <span className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  Demo account · read only
+                </span>
+              )}
           </div>
           <p className="text-sm text-slate-500 mt-0.5 truncate">{user?.email}</p>
          
@@ -54,16 +65,18 @@ export default function UserCard() {
         </div>
 
         {/* EDIT  */}
-        <button
-          onClick={() => setEditOpen(true)}
-          className="shrink-0 flex items-center gap-2 text-sm font-medium text-slate-600 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-          </svg>
-          Edit profile
-        </button>
+        {!isDemoAccount && (
+          <button
+            onClick={() => setEditOpen(true)}
+            className="shrink-0 flex items-center gap-2 text-sm font-medium text-slate-600 border border-slate-200 px-4 py-2 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            Edit profile
+          </button>
+        )}
       </div>
 
       {editOpen && <EditUserModal onClose={() => setEditOpen(false)} />}
