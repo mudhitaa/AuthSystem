@@ -46,13 +46,13 @@ export const stack: StackItem[] = [
     features: ['12 salt rounds', 'One-way hash', 'Timing-safe compare', 'Pre-save hook'],
   },
   {
-    name: 'Nodemailer',
+    name: 'Brevo',
     category: 'Email',
     color: 'bg-amber-50 border-amber-200',
     accent: 'text-amber-700 bg-amber-100',
-    why: "Node's most battle-tested email library. Supports Gmail SMTP out of the box.",
-    how: 'Used for two flows: email verification on register (token hashed before DB storage, plain token in link), and password reset (10 minute expiry enforced server-side).',
-    features: ['Email verification', 'Password reset', 'HTML templates', 'Gmail SMTP'],
+    why: "Brevo's free tier sends 300 emails/day to any recipient via HTTPS API — no SMTP means it works on Render and other restricted hosting platforms. Unlike Resend's free tier, no recipient verification required.",
+    how: 'Used for three flows: email verification on register (token hashed before DB storage, plain token in link), password reset (10 minute expiry enforced server-side), and email change re-verification. All triggered via a single sendEmail({ to, subject, html }) utility.',
+    features: ['Email verification', 'Password reset', 'Email change re-verification', 'HTML templates', 'HTTPS API (no SMTP)', '300 emails/day free'],
   },
   {
     name: 'React Hook Form + Zod',
