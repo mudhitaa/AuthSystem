@@ -22,7 +22,7 @@ export default function LoginPage() {
   } = useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
   const onSubmit = async (data: LoginForm) => {
-    console.log('Login data:', data);
+    
     try {
       await login(data);
       toast.success('Welcome back!');
